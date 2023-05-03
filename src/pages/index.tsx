@@ -2,10 +2,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import { Box } from '@chakra-ui/layout'
+import { Button } from '@chakra-ui/button'
+import { useColorMode } from '@chakra-ui/color-mode'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
     <>
       <Head>
@@ -49,7 +53,11 @@ export default function Home() {
             priority
           />
         </div>
-
+        <Box className={styles.center}>
+          <Button onClick={toggleColorMode}>
+            Toggle {colorMode === 'light' ? 'Dark' : 'Light'}
+          </Button>
+        </Box>
         <div className={styles.grid}>
           <a
             href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
