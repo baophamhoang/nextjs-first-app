@@ -2,7 +2,7 @@ import { NamedAPIResource, NamedAPIResourceList } from "@/types/pokemon";
 import { AxiosError } from "axios";
 import { API_URLS } from "./api-url";
 import client from "./client";
-import { ApiErrorResponse } from "./types";
+import { ApiErrorResponse, PokemonReponse } from "./types";
 
 export const getPokemonList = async () => {
   let res;
@@ -17,9 +17,9 @@ export const getPokemonList = async () => {
 
 export const getPokemon = async (searchTerm: string) => {
   let res;
-  if (!searchTerm) return {} as NamedAPIResource[];
+  if (!searchTerm) return {} as PokemonReponse[];
   try {
-    res = await client.get<NamedAPIResource[]>(API_URLS.POKEMON + `/${searchTerm}`);
+    res = await client.get<PokemonReponse[]>(API_URLS.POKEMON + `/${searchTerm}`);
   } catch (error) {
     const { message } = handlePokemonListError(error);
     throw new Error(message);
