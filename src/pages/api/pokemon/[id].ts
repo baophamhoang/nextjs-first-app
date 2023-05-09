@@ -16,7 +16,7 @@ export default function handler(
   const methodHandler: { [method: string]: Function } = {
     GET: async () => {
       try {
-        const apiResponse = await client.get<NamedAPIResourceList>('https://pokeapi.co/api/v2/pokemon/?limit=300  ');
+        const apiResponse = await client.get<NamedAPIResourceList>('https://pokeapi.co/api/v2/pokemon/?limit=200');
         response = apiResponse.data.results.filter(item => {
           const url = item.url.split('/');
           const isIdIncluded = (url.pop() || url.pop())?.includes(id);

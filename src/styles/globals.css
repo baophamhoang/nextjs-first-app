@@ -38,6 +38,12 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+  --closure-rgb: 181, 210, 203;
+  --closure-glow: linear-gradient(
+    to top,
+    rgb(46 46 46 / 0.3),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 @media (prefers-color-scheme: dark) {
@@ -70,6 +76,7 @@
     --callout-border-rgb: 108, 108, 108;
     --card-rgb: 100, 100, 100;
     --card-border-rgb: 200, 200, 200;
+    --closure-rgb: 55, 63, 61;
   }
 }
 
