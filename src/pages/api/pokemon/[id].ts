@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (_.isEmpty(cachedNamedList)) {
       try {
         const namedListResponse = await client.get<NamedAPIResourceList>(
-          "https://pokeapi.co/api/v2/pokemon/?limit=10000"
+          "https://pokeapi.co/api/v2/pokemon/?limit=200"
         );
         const formattedResponse = namedListResponse.data.results.map(obj => Object.values(obj));
         for (const [key, value] of formattedResponse) {

@@ -1,25 +1,20 @@
-import { NamedAPIResource, NamedAPIResourceList } from "@/types/pokemon";
 import { AxiosError } from "axios";
 import { API_URLS } from "./api-url";
 import client from "./client";
 import { ApiErrorResponse, PokemonReponse } from "./types";
 
-export const getPokemonList = async () => {
-  let res;
-  try {
-    res = await client.get<NamedAPIResourceList>(API_URLS.POKEMON);
-  } catch (error) {
-    const { message } = handlePokemonListError(error);
-    throw new Error(message);
-  }
-  return res.data;
-}
+export type InfinityLoad = {data: PokemonReponse[], nextCursor: string}
 
-export const getPokemon = async (searchTerm: string) => {
+export const getSearchPokemonList = async (searchTerm: string, page: number = 0, pageLimit?: number) => {
   let res;
-  if (!searchTerm) return {} as PokemonReponse[];
+  if (!searchTerm) return {} as InfinityLoad;
   try {
-    res = await client.get<PokemonReponse[]>(API_URLS.POKEMON + `/${searchTerm}`);
+    let queryParams = '?search=' + searchTerm;
+    if (page) { queryParams += '&page=' + page }
+    if (pageLimit) { queryParams += '&pageLimit=' + pageLimit }
+    res = await client.get<InfinityLoad>(
+      API_URLS.POKEMON + queryParams
+    );
   } catch (error) {
     const { message } = handlePokemonListError(error);
     throw new Error(message);
