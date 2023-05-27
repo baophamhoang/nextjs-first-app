@@ -1,1 +1,1 @@
-export * from './bearStore'
+export * from './useStore'
