@@ -65,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             name: r.data.name,
             imgUrl: r.data.sprites.front_default,
           }));
-          res.end(JSON.stringify(dataList));
+          res.end(JSON.stringify({data: dataList, nextCursor: page + 1}));
         } catch (e) {
           res.status(500).json({ message: "Can't get Pokemon list" });
         }

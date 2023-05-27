@@ -9,6 +9,7 @@ export const getSearchPokemonInfinityList = async (searchTerm: string, page: num
   let res;
   if (!searchTerm) return {} as InfinityLoad;
   try {
+    console.log('fetching with ', searchTerm);
     let queryParams = '?search=' + searchTerm;
     if (page) { queryParams += '&page=' + page }
     if (pageLimit) { queryParams += '&pageLimit=' + pageLimit }
@@ -24,7 +25,7 @@ export const getSearchPokemonInfinityList = async (searchTerm: string, page: num
 
 export const getSearchPokemonList = async (searchTerm: string, page: number = 0, pageLimit?: number) => {
   let res;
-  if (!searchTerm) return {} as PokemonReponse[];
+  if (!searchTerm) return {} as InfinityLoad;
   try {
     let queryParams = '?search=' + searchTerm;
     if (page) { queryParams += '&page=' + page }

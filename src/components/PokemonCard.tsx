@@ -19,9 +19,9 @@ export default function PokemonCard({data: {id, name, imgUrl}}: {data: PokemonRe
     <Link>
       <Card className={styles.card} borderWidth={1}>
         <p><span>No. {id}</span></p>
-        <p><h2>{toTitleCase(name)}</h2></p>
-        <p>{!isImageLoaded && <Spinner />}</p>
-        <p><CImage loading={'lazy'} src={imgUrl} alt={`id-${id}`} display={isImageLoaded ? "block" : "none"}></CImage></p>
+        <h2><p>{toTitleCase(name)}</p></h2>
+        <div>{!isImageLoaded && <Spinner />}</div>
+        <div><CImage loading={'lazy'} src={imgUrl} alt={`id-${id}`} display={isImageLoaded ? "block" : "none"}></CImage></div>
       </Card>
     </Link>
   )
