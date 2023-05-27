@@ -188,9 +188,13 @@ export default function PokePage({
   );
 }
 
+// TODO: remove later or config into a static ones
 export async function getStaticProps() {
-  const getName = await fetch("http://localhost:3000/api/test");
-  const test: { name: string } = await getName.json();
+  // const getName = await fetch("http://localhost:3000/api/test");
+  // const test: { name: string } = await getName.json();
+  const test: { name: string } = {
+    name: 'Bao'
+  };
   return {
     props: {
       test,
