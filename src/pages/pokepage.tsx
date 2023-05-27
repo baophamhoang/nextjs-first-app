@@ -1,5 +1,17 @@
+import PokemonCard from "@/components/PokemonCard";
 import { useGetSearchPkmList } from "@/hooks/useGetPkm";
-import { Box, Heading, Input, Link } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  Heading,
+  Input,
+  Link,
+  ScaleFade,
+  Spinner,
+  Stack,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 import { debounce, isEmpty } from "lodash";
 import { InferGetStaticPropsType } from "next";
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
@@ -25,14 +37,14 @@ export default function PokePage({
   );
 
   useEffect(() => {
-    console.log(data)
+    console.log(data);
   });
 
   return (
     <>
       <Box>
         <Heading as="h2" size="3xl" lineHeight="inherit" noOfLines={1}>
-          Index
+          Dex
         </Heading>
       </Box>
       <Box textAlign="center">
@@ -40,26 +52,37 @@ export default function PokePage({
           size="lg"
           variant="outline"
           placeholder="Type anything..."
-          width="40%"
+          w={{ base: "90%", md: "60%", lg: "40%" }}
           borderWidth="medium"
           focusBorderColor="#FFA07A"
           onChange={debouncedSearchChangeHandler}
         />
       </Box>
+      <Box h="10"></Box>
       <Box>
-        {isLoading && <>Loading...</>}
+        <Center>
+        {isLoading && <><Spinner mr={2}/>Loading...</>}
         {isError && <>{error}</>}
-        {isDataListValid &&  (
-          <>
-            {!isDataListEmpty? data.map((item, index) => {
-              return (
-                <p key={`item-${index}`}>
-                  Name:{item.name}/ Url:<Link href={item.url}>{item.url}</Link>
-                </p>
-              );
-            }) : <p>No items matched</p>}
-          </>
+        {isDataListValid && (
+          <Box w={{ base: "90%", md: "60%", lg: "40%" }}>
+            <Wrap>
+              {!isDataListEmpty ? (
+                data.map((item, index) => {
+                  return (
+                    <ScaleFade initialScale={0.9} in={!!item}>
+                      <WrapItem key={`item-${index}`}>
+                        <PokemonCard data={item}></PokemonCard>
+                      </WrapItem>
+                    </ScaleFade>
+                  );
+                })
+              ) : (
+                <p>No items matched</p>
+              )}
+            </Wrap>
+          </Box>
         )}
+        </Center>
       </Box>
     </>
   );

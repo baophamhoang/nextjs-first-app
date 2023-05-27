@@ -6,3 +6,9 @@ export interface ApiResponse<T> {
 export interface ApiErrorResponse {
   message: string,
 }
+
+export interface PokemonReponse {
+  id: number;
+  name: string;
+  imgUrl: string;
+}
