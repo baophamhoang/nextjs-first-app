@@ -1,0 +1,16 @@
+.Header {
+  background-color: chocolate;
+}
+
+.Navbar {
+  background-color:lightseagreen;
+  height: 3rem;
+  padding: 0.5rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Footer {
+  background-color: peru;
+}
