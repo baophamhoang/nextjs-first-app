@@ -1,5 +1,5 @@
 import PokemonCard from "@/components/PokemonCard";
-import { useGetSearchPkmList } from "@/hooks/useGetPkm";
+import { useGetSearchPkmList } from "@/hooks/useGetSearchPkmList"; 
 import {
   Box,
   Center,
@@ -29,14 +29,14 @@ export default function PokePage({
   // const {
   //   data,
   //   error,
+  //   isLoading,
+  //   isError,
   //   fetchNextPage,
   //   hasNextPage,
   //   isFetching,
   //   isFetchingNextPage,
   //   status,
-  // } = useGetSearchPkmListAdvanced({
-   
-  // })
+  // } = useGetSearchPkmListAdvanced(searchTerm)
 
   const closureBg =
     colorMode === "light" ? "closure.lightGreen" : "closure.gray";

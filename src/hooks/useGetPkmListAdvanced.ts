@@ -1,10 +1,15 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getPokemonList } from '@/apis/queries';
+import { QueryFunctionContext, useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { getSearchPokemonList } from '@/apis/queries';
+import { PokemonReponse } from '@/apis/types';
 
-export const useGetSearchPkmListAdvanced = () => {
+export const useGetSearchPkmListAdvanced = (search: string) => {
   return useInfiniteQuery({
-    queryKey: ['list'],
-    queryFn: getPokemonList,
-    getNextPageParam: (lastPage, pages) => lastPage.nextCursor,
+    queryKey: ['search-list-2'],
+    queryFn: (page) => {
+      return getSearchPokemonList(search, page.pageParam )
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextCursor
+    },
   })
 };
