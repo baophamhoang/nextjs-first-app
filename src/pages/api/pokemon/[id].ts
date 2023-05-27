@@ -18,7 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // cached full name list and reuse
   redisClient.on('error', err => console.log('Redis Client Error', err));
   // await redisClient.connect();
-  console.log('true');
 
   let namedList;
   try {
@@ -31,9 +30,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           "https://pokeapi.co/api/v2/pokemon/?limit=200"
         );
         namedList = namedListResponse;
-        const formattedResponse = namedListResponse.data.results.map(obj => Object.entries(obj)[0]);
-        console.log('formattedResponse :>> ', formattedResponse);
-        await redisClient.hSet('cachedNamedList', formattedResponse)
+        const formattedResponse = namedListResponse.data.results.map(obj => Object.values(obj));
+        for (const [key, value] of formattedResponse) {
+          console.log('[key, value] :>> ', [key, value]);
+          await redisClient.hSet('cachedNamedList', key, value);
+        }
       } catch (e) {
         res.status(500).json({ message: "Can't get Pokemon list" });
       }
