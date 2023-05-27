@@ -3,8 +3,8 @@
   flex-direction: column;
   /* justify-content: space-between; */
   /* align-items: center; */
-  padding: 3rem 4rem;
-  min-height: calc(100vh - 48px);
+  /* padding: 3rem 4rem; */
+  min-height: calc(100vh - 24px - 3rem);
 }
 
 .description {
@@ -67,7 +67,7 @@
 
 .card p {
   margin: 0;
-  opacity: 0.6;
+  /* opacity: 0.6; */
   font-size: 0.9rem;
   line-height: 1.5;
   max-width: 30ch;
@@ -87,6 +87,7 @@
   width: 480px;
   height: 360px;
   margin-left: -400px;
+  z-index: -1;
 }
 
 .center::after {
@@ -98,7 +99,7 @@
 
 .center::before,
 .center::after {
-  content: '';
+  content: "";
   left: 50%;
   position: absolute;
   filter: blur(45px);
@@ -109,15 +110,27 @@
   position: relative;
 }
 
-.search-bar {
-  
+.closure {
+  position: relative;
+  max-height: 500px;
+  overflow: overlay;
 }
+
+/* .closure::-webkit-scrollbar {
+  width: "10px";
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.closure::-webkit-scrollbar-thumb {
+  border-radius: "8px";
+  background-color: rgba(0, 0, 0, 0.4) ;
+} */
 
 /* Enable hover only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
-    background: rgba(var(--card-rgb), 0.1);
-    border: 1px solid rgba(var(--card-border-rgb), 0.15);
+    background: rgba(var(--card-rgb), 0.4);
+    border: 1px solid rgba(var(--card-border-rgb), 1);
   }
 
   .card:hover span {
@@ -145,7 +158,8 @@
   }
 
   .card {
-    padding: 1rem 2.5rem;
+    padding: 0.75rem 0.9rem;
+    width: 7.5rem;
   }
 
   .card h2 {
