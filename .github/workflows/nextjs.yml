@@ -12,8 +12,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 env:
-  # Setting an environment variable with the value of a configuration variable
-
+# Setting an environment variable with the value of a configuration variable
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
