@@ -33,7 +33,11 @@ jobs:
       - name: Detect package manager
         id: detect-package-manager
         run: |
-          echo API_URL=${{ env }}
+          echo API_URL=${{ env.gith }}
+          echo API_URL=${{ env['github-pages'] }}
+          echo API_URL=${{ env['github-pages'].vars.API_URL }}
+          echo API_URL=${{ env.github-pages }}
+          echo API_URL=${{ env.github-pages }}
           echo API_URL=${{ env.vars.API_URL }}
           echo API_URL=${{ vars.API_URL }}
           if [ -f "${{ github.workspace }}/yarn.lock" ]; then
