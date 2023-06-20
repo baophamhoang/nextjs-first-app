@@ -35,7 +35,6 @@ jobs:
       - name: Detect package manager
         id: detect-package-manager
         run: |
-          echo VARS_API_URL=${{ vars.API_URL }}
           echo VARS_API_URL=$API_URL
           echo VARS_API_URL=${{API_URL}}
           touch .env
