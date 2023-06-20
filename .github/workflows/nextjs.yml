@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  API_URL=${{ vars.API_URL}}
+  API_URL: ${{ vars.API_URL}}
 jobs:
   # Build job
   build:
@@ -35,9 +35,11 @@ jobs:
       - name: Detect package manager
         id: detect-package-manager
         run: |
-          echo VARS_API_URL=${{API_URL}}
+          echo VARS_API_URL=${{ vars.API_URL }}
+          echo VARS_API_URL=$API_URL
+          echo VARS_API_URL=${API_URL}
           touch .env
-          echo VARS_API_URL=${{ secrets.ENGINE_API_KEY }} >> .env
+          echo VARS_API_URL=${{ vars.API_URL }} >> .env
 
           if [ -f "${{ github.workspace }}/yarn.lock" ]; then
             echo "manager=yarn" >> $GITHUB_OUTPUT
