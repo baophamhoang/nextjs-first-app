@@ -23,6 +23,8 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  API_URL=${{ vars.API_URL}}
 jobs:
   # Build job
   build:
@@ -33,15 +35,11 @@ jobs:
       - name: Detect package manager
         id: detect-package-manager
         run: |
-          echo API_URL=${{ vars }}
-          echo API_URL=${{ secrets.SECRET_API_URL }}
-          echo API_URL=${{ secrets.github-pages }}
           echo API_URL=${{ vars.API_URL }}
-          echo API_URL=${SECRET_API_URL}
-          echo API_URL=${API_URL}
           echo API_URL=$API_URL
-          echo API_URL=$SECRET_API_URL
-
+          echo API_URL=${{API_URL}}
+          touch .env
+          echo ENGINE_API_KEY=${{ secrets.ENGINE_API_KEY }} >> .env
 
           if [ -f "${{ github.workspace }}/yarn.lock" ]; then
             echo "manager=yarn" >> $GITHUB_OUTPUT
