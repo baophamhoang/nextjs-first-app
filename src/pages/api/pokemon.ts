@@ -1,4 +1,5 @@
 import client from '@/apis/client';
+import { MAX_DEX_NO } from '@/configs/constants';
 import { NamedAPIResourceList, Pokemon } from '@/types/pokemon';
 import { createRedisClient } from '@/utils/redis';
 import axios from 'axios';
@@ -14,6 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const page = req.query.page ? +req.query.page || 0 : 0;
   const pageLimit = req.query.pageLimit ? +req.query.pageLimit || 20 : 20;
+  const sort = req.query.sort || 'asc';
 
   // cached full name list and reuse
   let cachedNamedList: { [key: string]: string };
@@ -23,10 +25,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     cachedNamedList = await redisClient.hGetAll('cachedNamedList');
     if (_.isEmpty(cachedNamedList)) {
       try {
-        const namedListResponse = await client.get<NamedAPIResourceList>('https://pokeapi.co/api/v2/pokemon/?limit=200');
+        const namedListResponse = await client.get<NamedAPIResourceList>('https://pokeapi.co/api/v2/pokemon/?limit=' + MAX_DEX_NO);
         const formattedResponse = namedListResponse.data.results.map((obj) => Object.values(obj));
+        let orderId = 1;
         for (const [key, value] of formattedResponse) {
-          await redisClient.hSet('cachedNamedList', key, value);
+          orderId++;
+          await redisClient.hSet('cachedNamedList', `${orderId}_${key}`, value);
         }
         cachedNamedList = await redisClient.hGetAll('cachedNamedList');
       } catch (e) {
@@ -46,6 +50,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     GET: async () => {
       try {
         response = Object.entries(cachedNamedList)
+          // TODO: refactor
+          // Find a better way instead of sorting on every requests
+          // Cached on a singleton service could be a way but it's gonna consume RAM
+          .sort((a, b) => {
+            const aOrderId = Number(a[0].split('_')[0]) ?? 0;
+            const bOrderId = Number(b[0].split('_')[0]) ?? 0;
+            if (sort === 'desc') {
+              return aOrderId > bOrderId ? -1 : 1;
+            } else {
+              return aOrderId > bOrderId ? 1 : -1;
+            } 
+          })
           .filter((e) => {
             const url = e[1].split('/');
             const isIdIncluded = (url.pop() || url.pop())?.includes(search);

@@ -1,14 +1,14 @@
-import { PokemonReponse } from "@/apis/types";
+import { PokemonReponse } from '@/apis/types';
 import styles from '@/styles/Home.module.css';
-import { toTitleCase } from "@/utils/toTitleCase";
-import { Card, Image as CImage, Link, Spinner } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { toTitleCase } from '@/utils/toTitleCase';
+import { Box, Card, Image as CImage, Flex, Link, Spinner } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
-export default function PokemonCard({data: {id, name, imgUrl}}: {data: PokemonReponse}) {
-  const [ isImageLoaded, setImageLoaded ] = useState(false);
+export default function PokemonCard({ data: { id, name, imgUrl } }: { data: PokemonReponse }) {
+  const [isImageLoaded, setImageLoaded] = useState(false);
   const handleLoadImage = () => {
     setImageLoaded(true);
-  }
+  };
   useEffect(() => {
     const img = new Image();
     img.src = imgUrl;
@@ -17,12 +17,18 @@ export default function PokemonCard({data: {id, name, imgUrl}}: {data: PokemonRe
 
   return (
     <Link>
-      <Card className={styles.card} borderWidth={1}>
-        <p><span>No. {id}</span></p>
-        <h2><p>{toTitleCase(name)}</p></h2>
+      <Card className={styles.card} borderWidth={1} w={{ base: '9rem', md: '10rem' }}>
+        <p>
+          <span>No. {id}</span>
+        </p>
+        <h2>
+          <p>{toTitleCase(name)}</p>
+        </h2>
         <div>{!isImageLoaded && <Spinner />}</div>
-        <div><CImage loading={'lazy'} src={imgUrl} alt={`id-${id}`} display={isImageLoaded ? "block" : "none"}></CImage></div>
+        <Flex justifyContent="center">
+          <CImage loading={'lazy'} src={imgUrl} alt={`id-${id}`} display={isImageLoaded ? 'block' : 'none'}></CImage>
+        </Flex>
       </Card>
     </Link>
-  )
+  );
 }
