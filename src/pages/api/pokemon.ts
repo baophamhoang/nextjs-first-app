@@ -1,9 +1,9 @@
-import client from "@/apis/client";
-import { NamedAPIResourceList, Pokemon } from "@/types/pokemon";
-import { createRedisClient } from "@/utils/redis";
-import axios from "axios";
-import _ from "lodash";
-import { NextApiRequest, NextApiResponse } from "next";
+import client from '@/apis/client';
+import { NamedAPIResourceList, Pokemon } from '@/types/pokemon';
+import { createRedisClient } from '@/utils/redis';
+import axios from 'axios';
+import _ from 'lodash';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { search } = req.query;
@@ -12,21 +12,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  const page = req.query.page ? (+req.query.page || 0) : 0;
-  const pageLimit = req.query.pageLimit ? (+req.query.pageLimit || 20) : 20;
+  const page = req.query.page ? +req.query.page || 0 : 0;
+  const pageLimit = req.query.pageLimit ? +req.query.pageLimit || 20 : 20;
 
   // cached full name list and reuse
-  let cachedNamedList: {[key: string]: string};
+  let cachedNamedList: { [key: string]: string };
 
   try {
     const redisClient = await createRedisClient();
     cachedNamedList = await redisClient.hGetAll('cachedNamedList');
     if (_.isEmpty(cachedNamedList)) {
       try {
-        const namedListResponse = await client.get<NamedAPIResourceList>(
-          "https://pokeapi.co/api/v2/pokemon/?limit=200"
-        );
-        const formattedResponse = namedListResponse.data.results.map(obj => Object.values(obj));
+        const namedListResponse = await client.get<NamedAPIResourceList>('https://pokeapi.co/api/v2/pokemon/?limit=200');
+        const formattedResponse = namedListResponse.data.results.map((obj) => Object.values(obj));
         for (const [key, value] of formattedResponse) {
           await redisClient.hSet('cachedNamedList', key, value);
         }
@@ -37,6 +35,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (error) {
     console.error('Failed to connect to Redis:', error);
+    res.status(500).json({
+      message: "Can't get Pokemon list",
+      error: 'Failed to connect to Redis:' + error,
+    });
   }
 
   let response;
@@ -45,19 +47,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         response = Object.entries(cachedNamedList)
           .filter((e) => {
-            const url = e[1].split("/");
+            const url = e[1].split('/');
             const isIdIncluded = (url.pop() || url.pop())?.includes(search);
             const isNameIncluded = e[0].includes(search);
             return isIdIncluded || isNameIncluded;
           })
-          .slice(page* pageLimit, (page + 1) * pageLimit);
+          .slice(page * pageLimit, (page + 1) * pageLimit);
         try {
           const responseList = await Promise.all(
             response.map((r) => {
               const apiRes = axios.get<Pokemon>(r[1]);
-              console.log('object :>> ', apiRes);
               return apiRes;
-            })
+            }),
           );
 
           const dataList = responseList.map((r) => ({
@@ -65,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             name: r.data.name,
             imgUrl: r.data.sprites.front_default,
           }));
-          res.end(JSON.stringify({data: dataList, nextCursor: page + 1}));
+          res.end(JSON.stringify({ data: dataList, nextCursor: page + 1 }));
         } catch (e) {
           res.status(500).json({ message: "Can't get Pokemon list" });
         }
@@ -77,9 +78,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method) {
     const action = methodHandler[req.method];
-    if (!action) res.status(405).json({ message: "Method not allowed" });
+    if (!action) res.status(405).json({ message: 'Method not allowed' });
     action();
   } else {
-    res.status(405).json({ message: "Method not allowed." });
+    res.status(405).json({ message: 'Method not allowed.' });
   }
 }

@@ -1,4 +1,5 @@
 import client from "@/apis/client";
+import { MAX_DEX_NO } from "@/configs/constants";
 import { NamedAPIResourceList, Pokemon } from "@/types/pokemon";
 import { createRedisClient } from "@/utils/redis";
 import axios from "axios";
@@ -24,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (_.isEmpty(cachedNamedList)) {
       try {
         const namedListResponse = await client.get<NamedAPIResourceList>(
-          "https://pokeapi.co/api/v2/pokemon/?limit=200"
+          "https://pokeapi.co/api/v2/pokemon/?limit=" + MAX_DEX_NO
         );
         const formattedResponse = namedListResponse.data.results.map(obj => Object.values(obj));
         for (const [key, value] of formattedResponse) {
@@ -55,7 +56,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           const responseList = await Promise.all(
             response.map((r) => {
               const apiRes = axios.get<Pokemon>(r[1]);
-              console.log('object :>> ', apiRes);
               return apiRes;
             })
           );
