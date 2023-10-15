@@ -3,7 +3,7 @@ import { API_URLS } from "./api-url";
 import client from "./client";
 import { ApiErrorResponse, PokemonReponse } from "./types";
 
-export type InfinityLoad = {data: PokemonReponse[], nextCursor: string}
+export type InfinityLoad = {data: PokemonReponse[], nextCursor: number}
 
 export const getSearchPokemonInfinityList = async (searchTerm: string, page: number = 0, pageLimit?: number) => {
   let res;

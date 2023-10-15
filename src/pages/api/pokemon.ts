@@ -13,8 +13,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
+  // default page 0
   const page = req.query.page ? +req.query.page || 0 : 0;
-  const pageLimit = req.query.pageLimit ? +req.query.pageLimit || 20 : 20;
+  // default page limit 30
+  const pageLimit = req.query.pageLimit ? +req.query.pageLimit || 30 : 30;
+  // default asc sorting
   const sort = req.query.sort || 'asc';
 
   // cached full name list and reuse

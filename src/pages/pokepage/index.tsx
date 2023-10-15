@@ -9,7 +9,7 @@ import SearchResult from './SearchResult';
 export default function PokePage({ test }: InferGetStaticPropsType<typeof getStaticProps>) {
   const { colorMode } = useColorMode();
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const { data, error, isError, isLoadingorFetching, isDataListValid, isFetchingNextPage, handleFetchNextPage, refetch } =
+  const { pkmList, error, isError, isSearching, isFetchingNextPage, currentCursor, hasNextPage, handleFetchNextPage, refetch } =
     useGetSearchPkmListAdvanced(searchTerm);
 
   const closureBg = getClosureBg(colorMode);
@@ -25,7 +25,14 @@ export default function PokePage({ test }: InferGetStaticPropsType<typeof getSta
 
   useEffect(() => {
     refetch();
-  }, [searchTerm, refetch]);
+  }, [searchTerm]);
+
+  // TODO: remove later. this is for testing
+  useEffect(() => {
+    console.log('pkmList :>> ', pkmList);
+    console.log('currentCursor :>> ', currentCursor);
+    console.log('hasNextPage :>> ', hasNextPage);
+  }, [pkmList, currentCursor, hasNextPage]);
 
   return (
     <>
@@ -47,14 +54,16 @@ export default function PokePage({ test }: InferGetStaticPropsType<typeof getSta
       </Box>
       <Box>
         <Center>
-          {isLoadingorFetching && (
+          {isSearching && (
             <Box bg={closureBg} w={{ base: '90%', md: '60%', lg: '40%' }} p={'1rem 1rem 1rem 1rem'}>
               <Spinner mr={2} />
               Loading...
             </Box>
           )}
+          {!isSearching && searchTerm && (
+            <SearchResult pkmList={pkmList} curentCursor={currentCursor} hasNextPage={hasNextPage} fetchNextPage={handleFetchNextPage} isFetchingNextPage={isFetchingNextPage} />
+          )}
           {isError && <>{error}</>}
-          {isDataListValid && <SearchResult data={data} fetchNextPage={handleFetchNextPage} isFetchingNextPage={isFetchingNextPage} />}
         </Center>
       </Box>
     </>

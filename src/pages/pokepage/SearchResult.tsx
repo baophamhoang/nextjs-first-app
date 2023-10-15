@@ -1,4 +1,5 @@
 import { InfinityLoad } from '@/apis/queries';
+import { PokemonReponse } from '@/apis/types';
 import PokemonCard from '@/components/PokemonCard';
 import styles from '@/styles/Home.module.css';
 import { getClosureBg } from '@/utils/theme-utils';
@@ -8,13 +9,17 @@ import { isEmpty } from 'lodash';
 import { useRef } from 'react';
 
 function SearchResult({
-  data,
+  pkmList,
   fetchNextPage,
   isFetchingNextPage,
+  curentCursor,
+  hasNextPage,
 }: {
-  data: InfiniteData<InfinityLoad> | undefined;
+  pkmList?: PokemonReponse[];
   fetchNextPage: Function;
   isFetchingNextPage: boolean;
+  curentCursor?: number;
+  hasNextPage: boolean;
 }) {
   // hooks
   const searchBoxRef = useRef<HTMLDivElement>(null);
@@ -22,15 +27,24 @@ function SearchResult({
 
   // vars
   const closureBg = getClosureBg(colorMode);
-  const isDataListEmpty = isEmpty(data) || isEmpty(data.pages) || data.pages.some((page) => !page.data);
+  const isPkmListValid = pkmList && !isEmpty(pkmList);
 
   // functions
+  const getFetchNextPagePoint = (clientHeight: number, scrollHeight: number, currentCursor: number) => {
+    const totalRange = scrollHeight - clientHeight;
+    // next page point is at 3/5 range of current page
+    const fetchNextPagePointRatio = (currentCursor + 3 / 5) / (currentCursor + 1);
+    return Math.floor(totalRange * fetchNextPagePointRatio);
+  };
+
   const handleScroll = () => {
     const listElement = searchBoxRef.current;
-    if (listElement) {
+    if (listElement && curentCursor !== undefined) {
       const { scrollTop, clientHeight, scrollHeight } = listElement;
-      const isAtBottom = scrollTop + clientHeight === scrollHeight;
-      if (isAtBottom) {
+      // when scrolling out of nextPagePoint, fetch next page
+      const nextPagePoint = getFetchNextPagePoint(clientHeight, scrollHeight, curentCursor);
+      const isAtFetchNextPagePoint = scrollTop + clientHeight >= nextPagePoint;
+      if (isAtFetchNextPagePoint && !isFetchingNextPage && hasNextPage) {
         fetchNextPage();
       }
     }
@@ -70,18 +84,16 @@ function SearchResult({
               },
             }}
           >
-            <Wrap spacing={{base: 1, md: 3}} justifyContent={'center'} mt="1rem">
-              {!isDataListEmpty ? (
-                data?.pages.map((page, index) => {
-                  return page.data.map((item: any, index2: number) => {
-                    return (
-                      <ScaleFade key={index + '-' + index2} initialScale={0.9} in={!!item}>
-                        <WrapItem key={`item-${index}`}>
-                          <PokemonCard data={item}></PokemonCard>
-                        </WrapItem>
-                      </ScaleFade>
-                    );
-                  });
+            <Wrap spacing={{ base: 1, md: 3 }} justifyContent={'center'} mt="1rem">
+              {isPkmListValid ? (
+                pkmList.map((item) => {
+                  return (
+                    <ScaleFade key={'scaleFade-' + item.id} initialScale={0.9} in={!!item}>
+                      <WrapItem key={`item-${item.id}`}>
+                        <PokemonCard data={item}></PokemonCard>
+                      </WrapItem>
+                    </ScaleFade>
+                  );
                 })
               ) : (
                 <p>No items matched</p>
