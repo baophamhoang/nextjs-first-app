@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           .filter((e) => {
             const url = e[1].split('/');
             const isIdIncluded = (url.pop() || url.pop())?.includes(search);
-            const isNameIncluded = e[0].includes(search);
+            const isNameIncluded = e[0].includes(search.toLowerCase());
             return isIdIncluded || isNameIncluded;
           })
           .slice(page * pageLimit, (page + 1) * pageLimit);
